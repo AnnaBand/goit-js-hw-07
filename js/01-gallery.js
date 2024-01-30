@@ -24,10 +24,7 @@ function createGalleryItem(item) {
   return galleryItem;
 }
 
-galleryItems.forEach((item) => {
-  const galleryItem = createGalleryItem(item);
-  galleryContainer.appendChild(galleryItem);
-});
+galleryContainer.innerHTML = galleryItems.map(createGalleryItem).join('');
 
 // Clicks on images
 galleryContainer.addEventListener('click', (event) => {
