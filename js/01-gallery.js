@@ -4,7 +4,7 @@ import { galleryItems } from './gallery-items.js';
 const galleryContainer = document.querySelector('.gallery');
 let currentInstance = null;
 
-function createGalleryItem(item) {
+const createGalleryItem = (item) => {
   const galleryItem = document.createElement('div');
   galleryItem.classList.add('gallery__item');
 
@@ -24,7 +24,10 @@ function createGalleryItem(item) {
   return galleryItem;
 }
 
-galleryContainer.innerHTML = galleryItems.map(createGalleryItem).join('');
+galleryItems.forEach((item) => {
+  const galleryItem = createGalleryItem(item);
+  galleryContainer.appendChild(galleryItem);
+});
 
 // Clicks on images
 galleryContainer.addEventListener('click', (event) => {
