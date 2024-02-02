@@ -2,7 +2,6 @@ import { galleryItems } from './gallery-items.js';
 // Change code below this line
 
 const galleryContainer = document.querySelector('.gallery');
-let currentInstance = null;
 
 const createGalleryItem = (item) => {
   const galleryItem = document.createElement('div');
@@ -24,39 +23,37 @@ const createGalleryItem = (item) => {
   return galleryItem;
 }
 
-galleryItems.forEach((item) => {
-  const galleryItem = createGalleryItem(item);
-  galleryContainer.appendChild(galleryItem);
-});
+const galleryTemp = document.createDocumentFragment();
+
+galleryItems.map(item => galleryTemp.appendChild(createGalleryItem(item)));
+
+galleryContainer.appendChild(galleryTemp);
 
 // Clicks on images
-galleryContainer.addEventListener('click', (event) => {
+galleryContainer.addEventListener("click", showImage);
+
+const instance = basicLightbox.create(`<img src="">`, {
+    onShow: () => {
+      document.addEventListener("keydown", pressKey);
+    },
+    onClose: () => {
+      document.removeEventListener("keydown", pressKey);
+    },
+  }
+);
+
+function pressKey(event) {
+  if (event.key === "Escape") {
+    instance.close();
+  }
+}
+
+function showImage(event) {
   event.preventDefault();
-
-  const target = event.target;
-  if (target.nodeName === 'IMG') {
-      const largeImageUrl = target.dataset.source;
-      
-      console.log('Clicked on image!', largeImageUrl);
-
-    // Checking if a modal window is currently open
-    if (currentInstance) {
-      // If yes, close it
-      currentInstance.close();
-    }
-
-    // Opening a new modal window by using basicLightbox
-    const instance = basicLightbox.create(`<img src="${largeImageUrl}" alt="Image description">`);
-    instance.show();
-
-    currentInstance = instance;
+  if (event.target.nodeName !== "IMG") {
+    return;
   }
-});
-
-// Escape key
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && currentInstance) {
-      
-    currentInstance.close();
-  }
-});
+    
+  instance.element().querySelector("IMG").src = event.target.dataset.source;
+  instance.show();
+}
